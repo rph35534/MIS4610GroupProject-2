@@ -22,7 +22,8 @@ The goal of this project was to transform messy, unstructured spreadsheet data i
 
 ### ERD Diagram
 <img width="769" height="447" alt="Screenshot 2026-04-24 at 4 26 38 PM" src="https://github.com/user-attachments/assets/b3d8565d-435d-4ba1-822c-2ed65f02c141"/>
-### Explanation
+
+###Explanation
 
 The database was designed to represent the core operations of a retail business, including customers, orders, employees, and products.
 
