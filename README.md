@@ -22,7 +22,6 @@ This project focuses on turning messy spreadsheet data into a usable relational 
 
 #### Data Model Explanation
 Customer
-
 The Customer entity stores information about individuals who place orders. Attributes include customer ID, name, email, and customer type (e.g., student, loyalty, guest).
 
 Primary Key: customer_id
