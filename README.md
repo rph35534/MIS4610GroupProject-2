@@ -1,9 +1,6 @@
 
 # MIST 4610 Group Project #2 - Northline Outfitters
 
-## Group Information
-**Group Name:** [Your Group Name]
-
 ### Members and Roles
 -  - Group Leader
 -  - Conceptual Modeler
@@ -94,42 +91,145 @@ This entity supports supply chain analysis and connects vendors to products.
 It enables answering questions like which vendors supply products across multiple categories.
 
 ## Data Quality Assessment
+1. Inconsistent Date Formats
 
-The raw spreadsheet data contained several quality issues that had to be addressed before database implementation.
+The sale_date column contains multiple date formats, including:
 
-### Main Data Quality Issues
-1. **Mixed date formats**
-   - Some dates appeared in U.S. style while others followed Canadian formatting.
-   - This created ambiguity in interpreting transaction dates.
+10-11-2025 (numeric format)
+Oct 17 25 (abbreviated text format)
+October 5 25 (full text format)
+June 11 2025 (mixed format)
+Why this is a problem:
+Prevents proper sorting, filtering, and date-based analysis
+Cannot be directly stored as a DATE/DATETIME data type without conversion
+2. Embedded and Unstructured Customer Data
 
-2. **Embedded customer information**
-   - The `customer_info` field combined multiple pieces of information into one field.
-   - In some cases, it included the customer name plus notes such as "student," "loyalty customer," or "guest checkout."
+The customer_info field contains multiple pieces of information in one column, such as:
 
-3. **Inconsistent country and shipping data**
-   - Country indicators were sometimes embedded in identifiers.
-   - Shipping destination values were inconsistent, including actual locations and notes like "Same as billing" or "Dorm pickup."
+"Mason Rivera; Loyalty? Y"
+"Grace Hall | Student | US"
+Issues:
+Customer name, loyalty status, and student status are combined
+Different delimiters used (;, |)
+Inconsistent formatting
+Why this is a problem:
+Violates normalization (not atomic)
+Makes it difficult to query customer attributes separately
+3. Inconsistent Payment Method Formatting
 
-4. **Mixed measurement units**
-   - Size, weight, and dimension fields used both metric and imperial units.
+The payment_method column contains inconsistent values:
 
-5. **Inconsistent discount and tax formatting**
-   - Discount values appeared as percentages, text, or raw numeric values.
-   - Tax values were also inconsistently formatted.
+VISA, visa
+Cash
+Interac
+Why this is a problem:
+Same payment type stored in multiple formats
+Leads to incorrect grouping in queries
+4. Mixed Currency and Numeric Formatting
 
-6. **Duplicate-looking or variant product rows**
-   - Some products appeared multiple times with small naming or formatting differences.
-   - Some items may have represented product variants rather than entirely separate products.
+Columns such as unit_price contain currency symbols and text:
 
-7. **Inconsistent categorical values**
-   - Payment methods, categories, return flags, and discontinued values were not always entered in a standard format.
+USD 18.99
+CAD 46.99
 
-8. **Missing or incomplete values**
-   - Some rows contained blanks in fields such as email, alternate SKU, shipping data, or notes.
+The line_total column contains:
 
-### Why These Issues Matter
-These problems affect data consistency, make SQL analysis less reliable, and create difficulties when building normalized tables with clean keys and relationships.
+$19.43
+Missing values
+Why this is a problem:
+Prevents direct use as numeric data (DECIMAL)
+Requires parsing before calculations can be performed
+5. Inconsistent Discount Values
 
+The discount column contains multiple formats:
+
+10%
+5
+promo5
+student 10%
+Why this is a problem:
+Mix of numeric, percentage, and text values
+Cannot be used directly in calculations
+Requires standardization into a numeric format
+6. Inconsistent Tax Formatting
+
+The tax column includes:
+
+Percentages (13%, 8.25%)
+Missing values (NULL)
+Why this is a problem:
+Needs conversion to decimal values for calculations
+Missing values must be handled appropriately
+7. Missing Values
+
+Several fields contain NULL or missing values:
+
+tax
+line_total
+size_or_weight
+return_flag
+notes
+Why this is a problem:
+Can cause errors in calculations and analysis
+Must be handled using NULL logic or default values
+8. Inconsistent Country Codes
+
+The ship_country field contains:
+
+US
+CA
+Why this is a problem:
+Not standardized to full names (United States, Canada)
+May cause confusion in reporting
+9. Unstructured Shipping Information
+
+The ship_to field contains inconsistent values:
+
+"Same as billing"
+"Toronto, ON"
+"Seattle, WA"
+Why this is a problem:
+Mix of actual locations and notes
+Difficult to separate into city/state attributes
+10. Inconsistent Size/Weight Formatting
+
+The size_or_weight column contains:
+
+11"
+11 inches
+one size
+NULL
+Why this is a problem:
+Mixed units and formats
+Not suitable for numeric analysis or standardization
+11. Return Flag Inconsistency
+
+The return_flag column contains:
+
+Y
+N
+NULL
+Why this is a problem:
+Needs to be standardized into a consistent format (e.g., 1/0 or Yes/No)
+12. SKU and Identifier Formatting Issues
+
+The dataset includes:
+
+SKU values like SKU-C-1014, SKU-U-1015
+Order IDs like UORD-1041, CORD-1003
+Employee IDs like EMU-202, EMC-403
+Why this is a problem:
+Embedded meaning (country or type) inside IDs
+May require parsing or standardization for analysis
+13. Duplicate or Variant Product Records
+
+Products appear with:
+
+Different casing (BREEZE RING LIGHT vs normal case)
+Slight naming inconsistencies
+Why this is a problem:
+Can lead to duplicate product entries
+Requires normalization and possibly grouping or cleaning
 ---
 
 ## Data Cleaning Process
