@@ -79,8 +79,15 @@ Which products generate the highest total sales revenue in each country?
 **Business Justification:**  
 This helps Northline Outfitters identify top-performing products in the United States and Canada, allowing for better inventory planning and targeted marketing strategies.
 
-**SQL:**
-```sql
+### SQL Queries
+### Query 1: Highest Revenue Products by Country
+
+**Business Question:**  
+Which products generate the highest total sales revenue in each country?
+
+**Business Justification:**  
+This helps Northline Outfitters identify top-performing products in the United States and Canada, allowing for better inventory planning and targeted marketing strategies.
+
 SELECT 
     o.order_nation,
     p.product_description,
@@ -90,14 +97,38 @@ JOIN Product p ON ol.sku = p.sku
 JOIN Orders o ON ol.order_id = o.order_id
 GROUP BY o.order_nation, p.product_description
 ORDER BY o.order_nation, total_sales_revenue DESC;
-### Business Rules
+This query aggregates total revenue by product and country, showing which products contribute the most to sales in each region.
 
-- Each order must have one customer and one employee  
-- Each order must contain at least one product  
-- Products are supplied by vendors  
-- Employees are grouped under managers  
-- Order_Line resolves the many-to-many relationship between orders and products  
+### Query 2
+Business Question:
+Which employees handle the most orders within each manager’s team?
 
+Business Justification:
+This helps evaluate employee productivity and compare performance within teams managed by the same supervisor.
+SELECT 
+    e.manager_id,
+    e.employee_id,
+    COUNT(DISTINCT o.order_id) AS orders_handled
+FROM Employee e
+JOIN Orders o ON e.employee_id = o.employee_id
+GROUP BY e.manager_id, e.employee_id
+ORDER BY e.manager_id, orders_handled DESC;
+This query counts the number of unique orders handled by each employee and compares them within their manager group.
+
+### Query 3
+Business Question:
+Which vendors supply products across more than one category?
+
+Business Justification:
+This helps identify vendors with diverse product offerings, which may be valuable for expanding inventory or strengthening supplier relationships.
+SELECT 
+    v.vendor_name,
+    COUNT(DISTINCT p.category) AS category_count
+FROM Vendor v
+JOIN Product p ON v.vendor_id = p.vendor_id
+GROUP BY v.vendor_name
+HAVING COUNT(DISTINCT p.category) > 1
+ORDER BY category_count DESC;
 ---
 
 ## Data Quality Assessment
