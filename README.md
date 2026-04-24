@@ -64,6 +64,74 @@ The database was designed to represent the core operations of a retail business,
 - One Vendor → Many Products  
 
 ---
+### Queries
+Query #1
+SELECT 
+    o.order_nation,
+    p.product_description,
+    SUM(ol.line_total) AS total_sales_revenue
+FROM Order_Line ol
+JOIN Product p ON ol.sku = p.sku
+JOIN Orders o ON ol.order_id = o.order_id
+GROUP BY o.order_nation, p.product_description
+ORDER BY o.order_nation, total_sales_revenue DESC;
+This query groups sales revenue by country and product to show which items generated the most revenue in each market.
+
+Query #2
+SELECT 
+    e.manager_id,
+    e.employee_id,
+    COUNT(DISTINCT o.order_id) AS orders_handled
+FROM Employee e
+JOIN Orders o ON e.employee_id = o.employee_id
+GROUP BY e.manager_id, e.employee_id
+ORDER BY e.manager_id, orders_handled DESC;
+This query counts how many unique orders each employee handled and sorts employees within their manager group.
+
+Query #3
+SELECT 
+    v.vendor_name,
+    COUNT(DISTINCT p.category) AS category_count
+FROM Vendor v
+JOIN Product p ON v.vendor_id = p.vendor_id
+GROUP BY v.vendor_name
+HAVING COUNT(DISTINCT p.category) > 1
+ORDER BY category_count DESC;
+This query finds vendors connected to more than one product category.
+
+Query #4
+SELECT 
+    c.loyalty_status,
+    COUNT(DISTINCT o.order_id) AS total_orders,
+    SUM(ol.line_total) AS total_revenue
+FROM Customer c
+JOIN Orders o ON c.customer_id = o.customer_id
+JOIN Order_Line ol ON o.order_id = ol.order_id
+GROUP BY c.loyalty_status
+ORDER BY total_revenue DESC;
+This query compares total revenue and order count between loyal and non-loyal customers.
+
+Query #5
+SELECT 
+    p.product_description,
+    COUNT(ol.line_id) AS total_lines_sold,
+    SUM(CASE WHEN ol.return_flag = 1 THEN 1 ELSE 0 END) AS total_returns
+FROM Product p
+JOIN Order_Line ol ON p.sku = ol.sku
+GROUP BY p.product_description
+ORDER BY total_returns DESC;
+This query shows which products were returned most often.
+
+Query #6
+SELECT 
+    DATE_FORMAT(o.sale_date, '%Y-%m') AS sales_month,
+    SUM(ol.line_total) AS monthly_revenue,
+    COUNT(DISTINCT o.order_id) AS total_orders
+FROM Orders o
+JOIN Order_Line ol ON o.order_id = ol.order_id
+GROUP BY DATE_FORMAT(o.sale_date, '%Y-%m')
+ORDER BY sales_month;
+This query groups orders by month and calculates total monthly revenue.
 
 ### Business Rules
 
