@@ -223,15 +223,6 @@ Embedded meaning (country or type) inside IDs
 May require parsing or standardization for analysis
 13. Duplicate or Variant Product Records
 
-Products appear with:
-
-Different casing (BREEZE RING LIGHT vs normal case)
-Slight naming inconsistencies
-Why this is a problem:
-Can lead to duplicate product entries
-Requires normalization and possibly grouping or cleaning
----
-
 ## Data Cleaning Process
 
 We cleaned the data before importing it into the database by standardizing formats, separating combined fields, and resolving inconsistent values.
