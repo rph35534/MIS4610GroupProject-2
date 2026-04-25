@@ -78,7 +78,7 @@ Which products generate the highest total sales revenue in each country?
 **Business Justification:**  
 This helps Northline Outfitters identify top-performing products in the United States and Canada, allowing for better inventory planning and targeted marketing strategies.
 
-SELECT 
+SELECT ... 
     o.order_nation,
     p.product_description,
     SUM(ol.line_total) AS total_sales_revenue
