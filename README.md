@@ -95,7 +95,7 @@ Which employees handle the most orders within each manager’s team?
 
 Business Justification:
 This helps evaluate employee productivity and compare performance within teams managed by the same supervisor.
-SELECT 
+SELECT ... 
     e.manager_id,
     e.employee_id,
     COUNT(DISTINCT o.order_id) AS orders_handled
@@ -111,7 +111,7 @@ Which vendors supply products across more than one category?
 
 Business Justification:
 This helps identify vendors with diverse product offerings, which may be valuable for expanding inventory or strengthening supplier relationships.
-SELECT 
+SELECT ... 
     v.vendor_name,
     COUNT(DISTINCT p.category) AS category_count
 FROM Vendor v
@@ -125,7 +125,7 @@ ORDER BY category_count DESC;
 Business Question: Which product categories have the highest return rates?
 Justification: High return rates in a category signal quality problems or misleading descriptions. Linking through the new normalized Category table gives cleaner grouping than the old free-text field.
 
-SELECT
+SELECT ...
     cat.category_name,
     COUNT(DISTINCT o.order_id)                                          AS total_orders,
     SUM(CASE WHEN o.return_flag = 'Y' THEN 1 ELSE 0 END)               AS returned_orders,
@@ -145,7 +145,7 @@ ORDER BY return_rate_pct DESC;
 Business Question: How does revenue break down between USD and CAD orders, and does it align with ship country?
 Justification: The original data had mixed currencies with no way to track them. The new currencyType field on Order makes this possible. This query helps management understand whether CAD revenue is being correctly attributed to Canadian orders, and flags any mismatches that survived cleaning.
 
-SELECT
+SELECT ...
     o.ship_country,
     o.currencyType,
     COUNT(DISTINCT o.order_id)              AS num_orders,
@@ -162,7 +162,7 @@ ORDER BY o.ship_country, o.currencyType;
 Business Question: Do different customer types (loyalty, student, guest) prefer different payment methods?
 Justification: The new Payment table separates payment data into its own entity, and Customer carries customer_type. This query uses both new structures and gives the marketing team insight into whether student customers skew toward debit/prepaid while loyalty customers use credit — useful for targeted promotions or checkout flow design.
 
-SELECT
+SELECT ...
     c.customer_type,
     pay.payment_method,
     COUNT(DISTINCT o.order_id)              AS num_orders,
