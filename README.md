@@ -3,10 +3,10 @@
 
 ### Members and Roles
 - Ryan Hooper – Group Leader  
-- [Name] – Conceptual Modeler  
-- [Name] – Database Designer  
-- [Name] – Data Wrangler  
-- [Name] – SQL Writer  
+- Tyler Oneacre – Conceptual Modeler  
+- Antwone Guerrero – Database Designer  
+- Shruthi Vikram – Data Wrangler  
+- Emma Stefan – SQL Writer  
 
 ---
 
@@ -66,18 +66,7 @@ The database was designed to represent the core operations of a retail business,
 
 ---
 ## Queries
-
-Each query includes the business question, justification, SQL code, and explanation of results.
-
 ---
-
-### Query 1: Highest Revenue Products by Country
-
-**Business Question:**  
-Which products generate the highest total sales revenue in each country?
-
-**Business Justification:**  
-This helps Northline Outfitters identify top-performing products in the United States and Canada, allowing for better inventory planning and targeted marketing strategies.
 
 ### SQL Queries
 ### Query 1: Highest Revenue Products by Country
@@ -129,7 +118,57 @@ JOIN Product p ON v.vendor_id = p.vendor_id
 GROUP BY v.vendor_name
 HAVING COUNT(DISTINCT p.category) > 1
 ORDER BY category_count DESC;
----
+
+Additional Query 1 — Return Rate by Category
+Business Question: Which product categories have the highest return rates?
+Justification: High return rates in a category signal quality problems or misleading descriptions. Linking through the new normalized Category table gives cleaner grouping than the old free-text field.
+
+SELECT
+    cat.category_name,
+    COUNT(DISTINCT o.order_id)                                          AS total_orders,
+    SUM(CASE WHEN o.return_flag = 'Y' THEN 1 ELSE 0 END)               AS returned_orders,
+    ROUND(
+        SUM(CASE WHEN o.return_flag = 'Y' THEN 1 ELSE 0 END) * 100.0
+        / NULLIF(COUNT(DISTINCT o.order_id), 0), 2
+    )                                                                   AS return_rate_pct
+FROM Category cat
+JOIN Product     p   ON cat.category_id     = p.category_id
+JOIN Order_Line  ol  ON p.sku               = ol.Product_sku
+JOIN `Order`     o   ON ol.Order_order_id   = o.order_id
+GROUP BY cat.category_id, cat.category_name
+ORDER BY return_rate_pct DESC;
+
+Additional Query 2- Revenue by currency and by country
+Business Question: How does revenue break down between USD and CAD orders, and does it align with ship country?
+Justification: The original data had mixed currencies with no way to track them. The new currencyType field on Order makes this possible. This query helps management understand whether CAD revenue is being correctly attributed to Canadian orders, and flags any mismatches that survived cleaning.
+
+SELECT
+    o.ship_country,
+    o.currencyType,
+    COUNT(DISTINCT o.order_id)              AS num_orders,
+    ROUND(SUM(ol.line_total), 2)            AS total_revenue,
+    ROUND(AVG(ol.line_total), 2)            AS avg_line_value
+FROM `Order` o
+JOIN Order_Line ol ON o.order_id = ol.Order_order_id
+WHERE o.ship_country IS NOT NULL
+GROUP BY o.ship_country, o.currencyType
+ORDER BY o.ship_country, o.currencyType;
+
+Additional Query 3 — Payment Method Popularity by Customer Type
+Business Question: Do different customer types (loyalty, student, guest) prefer different payment methods?
+Justification: The new Payment table separates payment data into its own entity, and Customer carries customer_type. This query uses both new structures and gives the marketing team insight into whether student customers skew toward debit/prepaid while loyalty customers use credit — useful for targeted promotions or checkout flow design.
+
+SELECT
+    c.customer_type,
+    pay.payment_method,
+    COUNT(DISTINCT o.order_id)              AS num_orders,
+    ROUND(SUM(pay.payment_amount), 2)       AS total_paid
+FROM Customer c
+JOIN `Order`   o    ON c.customer_id        = o.Customer_customer_id
+JOIN Payment   pay  ON o.order_id           = pay.order_id
+GROUP BY c.customer_type, pay.payment_method
+ORDER BY c.customer_type, num_orders DESC;
+
 
 ## Data Quality Assessment
 
@@ -176,6 +215,9 @@ Dates were previously in mixed format (ie; January 1, 2005, 01-01-2005, 2005-01-
 Separated customer_info into customer_name, customer_loyalty, customer_student, and customer_guest
 Since customer_info was a multi-attribute column, in the data cleaning process we separated the information into 4 columns. This denotes the customer’s name, whether or not they are part of the loyalty program, whether they are student status, or a guest customer. 
 Standardized payment_method 
+UPDATE Sales_Dump
+SET payment_method = 'Visa'
+WHERE payment_method = 'VISA';
 Payment method contained mixed formats (abbreviations, capitalization inconsistencies, etc). We found and replaced any instances of “VISA” with “Visa” and “MC” with “Mastercard” to maintain consistency.
 Standardized product_description
 Some product descriptions were in all-caps, while others followed standard capitalization. To absolve this formatting issue, we converted all product descriptions to follow standard capitalization. 
