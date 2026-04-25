@@ -24,7 +24,7 @@ The goal of this project was to transform messy, unstructured spreadsheet data i
 <img width="688" height="667" alt="DM3" src="https://github.com/user-attachments/assets/a6cb0046-a011-4966-a057-26392b423dd1" />
 
 
-###Explanation
+### Explanation
 
 The database was designed to represent the core operations of a retail business, including customers, orders, employees, and products.
 
