@@ -120,7 +120,8 @@ GROUP BY v.vendor_name
 HAVING COUNT(DISTINCT p.category) > 1
 ORDER BY category_count DESC;
 
-Additional Query 1 — Return Rate by Category
+### Additional Query 1 — Return Rate by Category
+
 Business Question: Which product categories have the highest return rates?
 Justification: High return rates in a category signal quality problems or misleading descriptions. Linking through the new normalized Category table gives cleaner grouping than the old free-text field.
 
@@ -139,7 +140,8 @@ JOIN `Order`     o   ON ol.Order_order_id   = o.order_id
 GROUP BY cat.category_id, cat.category_name
 ORDER BY return_rate_pct DESC;
 
-Additional Query 2- Revenue by currency and by country
+### Additional Query 2- Revenue by currency and by country
+
 Business Question: How does revenue break down between USD and CAD orders, and does it align with ship country?
 Justification: The original data had mixed currencies with no way to track them. The new currencyType field on Order makes this possible. This query helps management understand whether CAD revenue is being correctly attributed to Canadian orders, and flags any mismatches that survived cleaning.
 
@@ -155,7 +157,8 @@ WHERE o.ship_country IS NOT NULL
 GROUP BY o.ship_country, o.currencyType
 ORDER BY o.ship_country, o.currencyType;
 
-Additional Query 3 — Payment Method Popularity by Customer Type
+### Additional Query 3 — Payment Method Popularity by Customer Type
+
 Business Question: Do different customer types (loyalty, student, guest) prefer different payment methods?
 Justification: The new Payment table separates payment data into its own entity, and Customer carries customer_type. This query uses both new structures and gives the marketing team insight into whether student customers skew toward debit/prepaid while loyalty customers use credit — useful for targeted promotions or checkout flow design.
 
