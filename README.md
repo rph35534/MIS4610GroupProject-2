@@ -262,6 +262,12 @@ pack_size was originally in mixed format (“case of 6” or “1 each” or “
 Converted weight and length into common units 
 To eliminate variance in the data, all weight values were converted to kilograms, and all lengths were converted to inches. These calculations were done manually.
 
+## Database Implementation
+
+The database tables were added in SQL using the `create_tables.sql` script in the `sql/` folder. The script creates the tables from our model, Customer, Employee, Vendor, Product Category, Product, Order, Order_Line, and Payment.
+
+
+<img width="253" height="356" alt="project 3" src="https://github.com/user-attachments/assets/24efad7d-7b3b-45bc-8ced-48cfc266b4c1" />
 
 
 
