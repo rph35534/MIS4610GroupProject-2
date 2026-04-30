@@ -24,7 +24,7 @@ CREATE TABLE Vendor (
     email_missing BOOLEAN
 );
 
-CREATE TABLE Category (
+CREATE TABLE Product_Category (
     category_id INT PRIMARY KEY,
     category_name VARCHAR(100) NOT NULL,
     subcategory VARCHAR(100)
