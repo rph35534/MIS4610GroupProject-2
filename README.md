@@ -23,6 +23,110 @@ The goal of this project was to transform messy, unstructured spreadsheet data i
 ### ERD Diagram
 <img width="688" height="667" alt="DM3" src="https://github.com/user-attachments/assets/a6cb0046-a011-4966-a057-26392b423dd1" />
 
+### Data Dictionary
+## Data Dictionary
+
+### Customer
+| Field | Type | Key | Description |
+|---|---|---|---|
+| customer_id | INT | PK | Unique customer identifier |
+| customer_name | VARCHAR(100) |  | Customer name |
+| customer_email | VARCHAR(150) |  | Customer email address |
+| customer_type | VARCHAR(50) |  | Customer type such as loyalty, student, or guest |
+| customer_loyalty | VARCHAR(20) |  | Loyalty status |
+
+---
+
+### Employee
+| Field | Type | Key | Description |
+|---|---|---|---|
+| employee_id | VARCHAR(20) | PK | Unique employee identifier |
+| employee_nation | VARCHAR(20) |  | Employee country/nation |
+| manager_id | VARCHAR(20) | FK | Manager connected to the employee |
+| manager_nation | VARCHAR(20) |  | Manager country/nation |
+
+---
+
+### Vendor
+| Field | Type | Key | Description |
+|---|---|---|---|
+| vendor_id | INT | PK | Unique vendor identifier |
+| vendor_name | VARCHAR(150) |  | Vendor/supplier name |
+| vendor_phone | VARCHAR(20) |  | Standardized vendor phone number |
+| vendor_rep | VARCHAR(100) |  | Vendor representative |
+| email_missing | BOOLEAN |  | Indicates whether vendor email was missing |
+
+---
+
+### Product_Category
+| Field | Type | Key | Description |
+|---|---|---|---|
+| category_id | INT | PK | Unique category identifier |
+| category_name | VARCHAR(100) |  | Main product category |
+| subcategory | VARCHAR(100) |  | More specific product subcategory |
+
+---
+
+### Product
+| Field | Type | Key | Description |
+|---|---|---|---|
+| sku | VARCHAR(30) | PK | Unique product identifier |
+| product_description | VARCHAR(255) |  | Product name or description |
+| category_id | INT | FK | Links product to Product_Category |
+| vendor_id | INT | FK | Links product to Vendor |
+| cost | DECIMAL(10,2) |  | Cost to purchase product |
+| list_price | DECIMAL(10,2) |  | Listed selling price |
+| reorder_level | INT |  | Inventory reorder point |
+| pack_size | VARCHAR(50) |  | Product packaging size |
+| weight_kg | DECIMAL(10,2) |  | Product weight in kilograms |
+| length_inches | DECIMAL(10,2) |  | Product length in inches |
+| discontinued | BOOLEAN |  | Indicates if product is discontinued |
+| parent_sku | VARCHAR(30) | FK | Parent SKU for product variants |
+| notes | VARCHAR(255) |  | Product notes |
+
+---
+
+### Order
+| Field | Type | Key | Description |
+|---|---|---|---|
+| order_id | VARCHAR(30) | PK | Unique order identifier |
+| order_nation | VARCHAR(20) |  | Country/nation connected to order ID |
+| sale_date | DATE |  | Date order was placed |
+| customer_id | INT | FK | Customer who placed order |
+| employee_id | VARCHAR(20) | FK | Employee who handled order |
+| ship_country | VARCHAR(50) |  | Country where order was shipped |
+| ship_to | VARCHAR(150) |  | Shipping destination |
+| currencyType | VARCHAR(10) |  | Currency used, such as USD or CAD |
+| return_flag | CHAR(1) |  | Indicates whether order was returned |
+| notes | VARCHAR(255) |  | Order notes |
+
+---
+
+### Order_Line
+| Field | Type | Key | Description |
+|---|---|---|---|
+| line_id | VARCHAR(30) | PK | Unique order line identifier |
+| order_id | VARCHAR(30) | FK | Order connected to the line item |
+| sku | VARCHAR(30) | FK | Product sold on the order line |
+| quantity | INT |  | Quantity sold |
+| unit_price | DECIMAL(10,2) |  | Price per unit |
+| unit_currency | VARCHAR(10) |  | Currency for unit price |
+| discount | DECIMAL(5,2) |  | Discount applied |
+| tax | DECIMAL(5,2) |  | Tax applied |
+| line_total | DECIMAL(10,2) |  | Final calculated line total |
+| one_size | BOOLEAN |  | Indicates whether item is one size |
+| size_inches | DECIMAL(10,2) |  | Item size in inches |
+| weight_kg | DECIMAL(10,2) |  | Item weight in kilograms |
+
+---
+
+### Payment
+| Field | Type | Key | Description |
+|---|---|---|---|
+| payment_id | INT | PK | Unique payment identifier |
+| order_id | VARCHAR(30) | FK | Order connected to payment |
+| payment_method | VARCHAR(50) |  | Standardized payment method |
+| payment_amount | DECIMAL(10,2) |  | Amount paid |
 
 ### Explanation
 
